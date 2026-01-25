@@ -1,13 +1,13 @@
 import { useState } from "react";
 import "./App.css";
 
-const images = Object.values(
+const images: string[] = Object.values(
   import.meta.glob("./assets/images/*.png", {
     eager: true,
     query: "?url",
     import: "default",
   }),
-);
+) as string[];
 
 function App() {
   const [index, setIndex] = useState(0);

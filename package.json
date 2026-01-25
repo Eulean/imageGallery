@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "preview": "vite preview",
-    "deploy": "gh-pages -d dist -b gh-pages --remove",
+    "deploy": "gh-pages -d dist -b gh-pages",
     "lint": "eslint ."
   },
   "dependencies": {
