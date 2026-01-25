@@ -2,7 +2,7 @@ import { useState } from "react";
 import "./App.css";
 
 const images: string[] = Object.values(
-  import.meta.glob("./assets/images/*.png", {
+  import.meta.glob("./assets/images/*.webp", {
     eager: true,
     query: "?url",
     import: "default",
@@ -36,7 +36,7 @@ function App() {
     <div className="container">
       <div className="viewer">
         <div className="image-box">
-          <img src={images[index]} alt="gallery" />
+          <img src={images[index]} alt="gallery" loading="lazy" />
         </div>
 
         <div className="controls">
