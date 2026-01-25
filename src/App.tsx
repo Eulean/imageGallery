@@ -4,7 +4,8 @@ import "./App.css";
 const images = Object.values(
   import.meta.glob("./assets/images/*.png", {
     eager: true,
-    as: "url",
+    query: "?url",
+    import: "default",
   }),
 );
 
