@@ -1,34 +1,46 @@
+// utils/groupImages.ts
 import { imageModules } from "./imageLoader";
 
 export type CategoryMap = Record<string, string[]>;
 
+let categoryMap: CategoryMap | null = null;
+
+// Build a map of category -> array of URLs
+export async function buildCategoryMap(): Promise<CategoryMap> {
+  if (categoryMap) return categoryMap; // cached
+
+  const map: CategoryMap = {};
+  const entries = Object.entries(imageModules);
+
+  await Promise.all(
+    entries.map(async ([path, loader]) => {
+      const category = path.split("/").slice(-2, -1)[0];
+      const url = await loader();
+      if (!map[category]) map[category] = [];
+      map[category].push(url);
+    }),
+  );
+
+  categoryMap = map;
+  return map;
+}
+
 export async function loadImagesByCategories(
   selectedCategories: string[],
 ): Promise<string[]> {
-  const entries = Object.entries(imageModules);
-
+  const map = await buildCategoryMap();
   const results: string[] = [];
 
-  for (const [path, loader] of entries) {
-    const category = path.split("/").slice(-2, -1)[0];
-
-    if (selectedCategories.includes(category)) {
-      const url = await loader();
-      results.push(url);
-    }
-  }
+  selectedCategories.forEach((cat) => {
+    if (map[cat]) results.push(...map[cat]);
+  });
 
   return results;
 }
 
 export function getAllCategories(): string[] {
-  const categories = new Set<string>();
-
-  Object.keys(imageModules).forEach((path) => {
-    const category = path.split("/").slice(-2, -1)[0];
-
-    categories.add(category);
-  });
-
-  return Array.from(categories).sort();
+  return Object.keys(imageModules)
+    .map((path) => path.split("/").slice(-2, -1)[0])
+    .filter((v, i, a) => a.indexOf(v) === i)
+    .sort();
 }
