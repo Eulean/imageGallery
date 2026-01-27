@@ -1,29 +1,45 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./App.css";
-
-const images: string[] = Object.values(
-  import.meta.glob("./assets/images/*.webp", {
-    eager: true,
-    query: "?url",
-    import: "default",
-  }),
-) as string[];
+import { getAllCategories, loadImagesByCategories } from "./utils/groupImages";
 
 function App() {
+  const [categories] = useState(getAllCategories());
+  const [selected, setSelected] = useState<string[]>([]);
+  const [images, setImages] = useState<string[]>([]);
   const [index, setIndex] = useState(0);
+
+  useEffect(() => {
+    if (selected.length === 0) {
+      setImages([]);
+      setIndex(0);
+      return;
+    }
+
+    loadImagesByCategories(selected).then((imgs) => {
+      setImages(imgs);
+      setIndex(0);
+    });
+  }, [selected]);
+
+  const toggleCategory = (cat: string) => {
+    setSelected((prev) =>
+      prev.includes(cat) ? prev.filter((c) => c !== cat) : [...prev, cat],
+    );
+  };
 
   const isFirst = index === 0;
   const isLast = index === images.length - 1;
+  const hasImages = images.length > 0;
 
   const prevImage = () => {
     if (!isFirst) {
-      setIndex(index - 1);
+      setIndex((i) => i - 1);
     }
   };
 
   const nextImage = () => {
     if (!isLast) {
-      setIndex(index + 1);
+      setIndex((i) => i + 1);
     }
   };
 
@@ -34,19 +50,37 @@ function App() {
 
   return (
     <div className="container">
+      {/* Category picker */}
+      <div className="category-bar">
+        {categories.map((cat) => (
+          <button
+            key={cat}
+            className={selected.includes(cat) ? "active" : ""}
+            onClick={() => toggleCategory(cat)}
+          >
+            {cat}
+          </button>
+        ))}
+      </div>
       <div className="viewer">
         <div className="image-box">
-          <img src={images[index]} alt="gallery" loading="lazy" />
+          {images.length > 0 ? (
+            <img src={images[index]} alt="gallery" loading="lazy" />
+          ) : (
+            <p>Select a category</p>
+          )}
         </div>
 
         <div className="controls">
-          <button onClick={prevImage} disabled={isFirst}>
+          <button onClick={prevImage} disabled={!hasImages || isFirst}>
             Prev
           </button>
 
-          <button onClick={shuffleImage}>Shuffle</button>
+          <button onClick={shuffleImage} disabled={!hasImages}>
+            Shuffle
+          </button>
 
-          <button onClick={nextImage} disabled={isLast}>
+          <button onClick={nextImage} disabled={!hasImages || isLast}>
             Next
           </button>
         </div>

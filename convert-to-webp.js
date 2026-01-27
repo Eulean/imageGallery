@@ -3,7 +3,7 @@ import path from "path";
 import sharp from "sharp";
 
 const folder =
-  "C:\\Users\\B2HD High End Rigs\\OneDrive\\Desktop\\ImgSuffel\\New folder\\imageGallery\\src\\assets\\images";
+  "C:\\Users\\B2HD High End Rigs\\OneDrive\\Desktop\\ImgSuffel\\img\\imageGallery\\src\\assets\\images";
 
 fs.readdir(folder, (err, files) => {
   if (err) throw err;
