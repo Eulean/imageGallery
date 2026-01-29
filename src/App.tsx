@@ -1,8 +1,13 @@
 import { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import "./App.css";
+import { getAllCategories, loadImagesByCategories } from "./utils/groupImages";
 import { getAllCategories, loadImagesByCategories } from "./utils/groupImages";
 
 function App() {
+  const [categories] = useState(getAllCategories());
+  const [selected, setSelected] = useState<string[]>([]);
+  const [images, setImages] = useState<string[]>([]);
   const [categories] = useState(getAllCategories());
   const [selected, setSelected] = useState<string[]>([]);
   const [images, setImages] = useState<string[]>([]);
@@ -26,6 +31,7 @@ function App() {
   const isFirst = index === 0;
   const isLast = index === images.length - 1;
   const hasImages = images.length > 0;
+  const hasImages = images.length > 0;
 
   const prevImage = () => {
     if (!isFirst) setIndex((i) => i - 1);
@@ -42,6 +48,18 @@ function App() {
 
   return (
     <div className="container">
+      {/* Category picker */}
+      <div className="category-bar">
+        {categories.map((cat) => (
+          <button
+            key={cat}
+            className={selected.includes(cat) ? "active" : ""}
+            onClick={() => toggleCategory(cat)}
+          >
+            {cat}
+          </button>
+        ))}
+      </div>
       <div className="viewer">
         {/* Top section: category bar + image */}
         <div className="top-section">
@@ -67,6 +85,7 @@ function App() {
         </div>
 
         <div className="controls">
+          <button onClick={prevImage} disabled={!hasImages || isFirst}>
           <button onClick={prevImage} disabled={!hasImages || isFirst}>
             Prev
           </button>
