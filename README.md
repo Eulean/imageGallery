@@ -72,9 +72,13 @@ export default defineConfig([
 ]);
 ```
 
+node convert-to-webp.js
+
 git checkout gh-pages
 git checkout -b gh-pages-backup
 git checkout dev
 git pull origin dev
 npm run build
 npx gh-pages -d dist -b gh-pages --dotfiles
+
+https://eulean.github.io/imageGallery/
